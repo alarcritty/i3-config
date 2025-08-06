@@ -1,0 +1,160 @@
+# i3 config file - Clean and Minimal
+
+# Modifier key
+set $mod Mod4
+
+# Font
+font pango: DejaVu Sans Book 10.5
+
+# Autostart applications
+exec --no-startup-id dex --autostart --environment i3
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+exec --no-startup-id nm-applet
+exec_always feh --bg-scale ~/Downloads/wallpaper.jpg
+exec_always compton
+exec --no-startup-id xrandr --output eDP-1 --primary --mode 1366x768 --pos 1680x0 --rotate normal --output DP-1 --off --output HDMI-1 --mode 1680x1050 --pos 0x0 --rotate normal --output DP-2 --off --output HDMI-2 --off 
+exec --no-startup-id xinput set-button-map "Logitech Wireless Mouse PID:4022" 1 2 3 5 4 6 7
+
+# Audio controls
+set $refresh_i3status killall -SIGUSR1 i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+
+# Brightness controls
+bindsym XF86MonBrightnessUp exec xbacklight -inc 20
+bindsym XF86MonBrightnessDown exec xbacklight -dec 20
+
+# Touchpad controls
+bindsym XF86TouchpadToggle exec /some/path/toggletouchpad.sh
+
+# Window controls
+floating_modifier $mod
+tiling_drag modifier titlebar
+
+# Key bindings - Applications
+bindsym $mod+Return exec alacritty
+bindsym $mod+q kill
+bindsym $mod+d exec --no-startup-id dmenu_run
+bindsym $mod+Shift+s exec flameshot gui
+bindsym $mod+shift+x exec i3lock --color "$bg-color"
+
+# Key bindings - Focus
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+l focus up
+bindsym $mod+semicolon focus right
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# Key bindings - Move windows
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+semicolon move right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# Layout controls
+bindsym $mod+h split h
+bindsym $mod+v split v
+bindsym $mod+f fullscreen toggle
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+bindsym $mod+a focus parent
+
+# Workspace definitions
+set $ws1 "1: terminal"
+set $ws2 "2: neovim"
+set $ws3 "3: firefox"
+set $ws4 "4: brave"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
+
+# Workspace switching
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+5 workspace number $ws5
+bindsym $mod+6 workspace number $ws6
+bindsym $mod+7 workspace number $ws7
+bindsym $mod+8 workspace number $ws8
+bindsym $mod+9 workspace number $ws9
+bindsym $mod+0 workspace number $ws10
+
+# Move containers to workspaces
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5
+bindsym $mod+Shift+6 move container to workspace number $ws6
+bindsym $mod+Shift+7 move container to workspace number $ws7
+bindsym $mod+Shift+8 move container to workspace number $ws8
+bindsym $mod+Shift+9 move container to workspace number $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws10
+
+# System controls
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+
+# Resize mode
+mode "resize" {
+        bindsym j resize shrink width 10 px or 10 ppt
+        bindsym k resize grow height 10 px or 10 ppt
+        bindsym l resize shrink height 10 px or 10 ppt
+        bindsym semicolon resize grow width 10 px or 10 ppt
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
+}
+bindsym $mod+r mode "resize"
+
+# Color scheme
+set $bg-color          #000000
+set $inactive-bg-color   #2f343f
+set $text-color          #f3f4f5
+set $inactive-text-color #676E7D
+set $urgent-bg-color     #E53935
+
+# Window appearance
+hide_edge_borders both
+
+# Window assignments
+assign [class="Code"] $ws2
+assign [class="firefox"] $ws3
+
+# Floating windows
+for_window [window_type="dialog"] floating enable, resize set 1200 800, move position center
+for_window [title=".*[Oo]pen.*"] floating enable, resize set 1200 800
+for_window [title=".*[Ss]ave.*"] floating enable, resize set 1200 800
+
+# Status bar
+bar {
+        status_command i3blocks -c ~/.config/i3/i3blocks.conf
+        colors {
+            background $bg-color
+            separator #757575
+            focused_workspace  $bg-color          $bg-color          $text-color
+            inactive_workspace $inactive-bg-color $inactive-bg-color $inactive-text-color
+            urgent_workspace   $urgent-bg-color   $urgent-bg-color   $text-color
+        }
+}
